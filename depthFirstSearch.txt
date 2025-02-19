@@ -1,0 +1,102 @@
+# dictionary of coords we have been to and what direction we arrived from
+# list of directions in order to reach the goal
+# last in, first out stack of fringe nodes to still explore
+# dictionary of coords we are adding to the fringe and what coord we got there from
+    
+# retrieve the starting coords
+# push the starting tuple to the stack. start coords, no direction arrived from since we spawned here, 0 cost
+# set the start coordinate as having been travelled to, no arrival direction since we spawned here
+# if our spawn is the goal, return an empty set of solution directions
+# return our solution
+    
+# while we either have not run our of nodes to try exploring
+# retrieve the most recently added node from the LIFO stack. coords, direction arrived from, cost
+# sets the current coords as having been travelled to, and that we got here from the direction retrieved from our current vertex
+# if the current vertex is our goal
+# set the 'goal' or 'child' node to the coords of our final vertex
+# break out of the loop since we found our goal
+# loop through each of the possible children of our vertex
+# only count them if we have not yet visited the coords in question
+# track where we got here from. child coords is matched to parent coords
+# add this vertex to our LIFO stack
+                
+# at this point we have either run out of possible options, meaning we have no solution, or we have found our goal.
+# now we need to cycle through out 'route' dictionary starting with our goal vertex which we assigned to 'child'.
+# we then retrieve the location of the 'parent' node from the 'route' dictionary using 'child' as the key.
+# add the direction in which we arrived at our child node to the front of the solution
+# set the parent as the new child, stepping backwards through our solution until we arrive back at the start
+# return our solution
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    visited = {} # dictionary of coords we have been to and what direction we arrived from
+    solution = [] # list of directions in order to reach the goal
+    stack = util.Stack() # last in, first out stack of fringe nodes to still explore
+    route = {} # dictionary of coords we are adding to the fringe and what coord we got there from
+    
+    start = problem.getStartState() # retrieve the starting coords
+    stack.push((start, '', 0)) # push the starting tuple to the stack. start coords, no direction arrived from since we spawned here, 0 cost
+    visited[start] = '' # set the start coordinate as having been travelled to, no arrival direction since we spawned here
+    if problem.isGoalState(start): # if our spawn is the goal, return an empty set of solution directions
+        return solution # return our solution
+    
+    while not(stack.isEmpty()): # while we either have not run our of nodes to try exploring
+        vertex = stack.pop() # retrieve the most recently added node from the LIFO stack. coords, direction arrived from, cost
+        visited[vertex[0]] = vertex[1] # sets the current coords as having been travelled to, and that we got here from the direction retrieved from our current vertex
+        if problem.isGoalState(vertex[0]): # if the current vertex is our goal
+            child = vertex[0] # set the 'goal' or 'child' node to the coords of our final vertex
+            break # break out of the loop since we found our goal
+        for i in problem.getSuccessors(vertex[0]): # loop through each of the possible children of our vertex
+            if i[0] not in visited.keys(): # only count them if we have not yet visited the coords in question
+                route[i[0]] = vertex[0] # track where we got here from. child coords is matched to parent coords
+                stack.push(i) # add this vertex to our LIFO stack
+                
+    # at this point we have either run out of possible options, meaning we have no solution, or we have found our goal.
+    # now we need to cycle through out 'route' dictionary starting with our goal vertex which we assigned to 'child'.
+    # we then retrieve the location of the 'parent' node from the 'route' dictionary using 'child' as the key.
+    # add the direction in which we arrived at our child node to the front of the solution
+    # set the parent as the new child, stepping backwards through our solution until we arrive back at the start
+    # return our solution
+                
+    while (child in route.keys()):
+        parent = route[child]
+        solution.insert(0, visited[child])
+        child = parent
+    
+    return solution
