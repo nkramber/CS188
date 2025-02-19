@@ -90,12 +90,77 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    
+    visited = {} #Dictionary of coords we have already been to and what direction we arrived from
+    solution = [] #List of directions in order to reach the goal
+    stack = util.Stack() #Last in, first out stack of fringe nodes to still explore
+    route = {} #Dictionary of coords we are adding to the fringe and what coord we got there from
+    
+    start = problem.getStartState() #Retrieve the starting coords
+    stack.push((start, '', 0)) #Push the starting tuple to the stack. (Start coords, direction arrived from, cost)
+    visited[start] = '' #Set the start coordinate as having been travelled to, no arrival direction since we spawned here
+    
+    if problem.isGoalState(start): #If our spawn is the goal, return an empty set of solution directions
+        return solution #Return our solution
+    
+    while not (stack.isEmpty()): #While we have not run out of nodes to try exploring
+        node = stack.pop() #Retrieve the most recently added node from the LIFO stack. (Coords, direction arrived from, cost)
+        visited[node[0]] = node[1] #Sets the current coords as having been travelled to, and that we got here from the direction retrieved from our current node
+        
+        if problem.isGoalState(node[0]): #If the current node is our goal
+            child = node[0] #Set the child node to the coords of our goal node
+            break #Break out of the loop
+        
+        for i in problem.getSuccessors(node[0]): #Loop through each of the possible children of our node
+            if i[0] not in visited.keys(): #Only count the child node if it hasn't been visited before
+                route[i[0]] = node[0] #Track how we got to this node. Child coords are matched to parent coords
+                stack.push(i) #Add the new node to our LIFO stack
+                
+    while (child in route.keys()): #Cycle through our discovered route starting with the goal node
+        parent = route[child] #Retrieve the location of the parent node from the route using child as the key
+        solution.insert(0, visited[child]) #Add the direction that we arrived at the child node from the parent node to the solution
+        child = parent #Set the parent as the new child, stepping backwards through the route until we arrive at the starting point
+        
+    return solution #Return the solution
+
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    visited = {} #Dictionary of coords we have already been to and what direction we arrived from
+    solution = [] #List of directions in order to reach the goal
+    queue = util.Queue() #First in, first out queue of fringe nodes to still explore
+    route = {} #Dictionary of coords we are adding to the fringe and what coord we got there from
+    
+    start = problem.getStartState() #Retrieve the starting coords
+    queue.push((start, '', 0)) #Push the starting tuple to the queue. (Start coords, direction arrived from, cost)
+    visited[start] = '' #Set the start coordinate as having been travelled to, no arrival direction since we spawned here
+    
+    if problem.isGoalState(start): #If our spawn is the goal, return an empty set of solution directions
+        return solution #Return our solution
+    
+    while not (queue.isEmpty()): #While we have not run out of nodes to try exploring
+        node = queue.pop() #Retrieve the most recently added node from the FIFO queue. (Coords, direction arrived from, cost)
+        visited[node[0]] = node[1] #Sets the current coords as having been travelled to, and that we got here from the direction retrieved from our current node
+        
+        if problem.isGoalState(node[0]): #If the current node is our goal
+            child = node[0] #Set the child node to the coords of our goal node
+            break #Break out of the loop
+        
+        for i in problem.getSuccessors(node[0]): #Loop through each of the possible children of our node
+            if i[0] not in visited.keys(): #Only count the child node if it hasn't been visited before
+                route[i[0]] = node[0] #Track how we got to this node. Child coords are matched to parent coords
+                queue.push(i) #Add the new node to our FIFO queue
+                
+    while (child in route.keys()): #Cycle through our discovered route starting with the goal node
+        parent = route[child] #Retrieve the location of the parent node from the route using child as the key
+        solution.insert(0, visited[child]) #Add the direction that we arrived at the child node from the parent node to the solution
+        child = parent #Set the parent as the new child, stepping backwards through the route until we arrive at the starting point
+        
+    return solution #Return the solution
+
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
